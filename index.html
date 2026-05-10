@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lottery-Box 抽奖箱</title>
+  <meta name="description" content="Lottery-Box 抽奖箱，帮助博主快速、公平地从笔记评论中抽取幸运用户。" />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+
+  <div class="min-h-screen flex flex-col items-center px-6 py-12">
+
+    <main class="w-full max-w-2xl flex flex-col gap-12">
+
+      <!-- 品牌标题区 -->
+      <header class="text-center space-y-3">
+        <h1 class="flex justify-center items-center gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-12 w-12 text-brand"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
+          <span class="text-2xl font-bold text-neutral-900 tracking-tight">Lottery-Box</span>
+        </h1>
+        <div class="flex items-center justify-center gap-3">
+          <span class="w-8 h-px bg-neutral-300"></span>
+          <span class="text-xs font-medium text-neutral-400 tracking-[0.2em]">评论区抽奖箱（小红书、微信、抖音）</span>
+          <span class="w-8 h-px bg-neutral-300"></span>
+        </div>
+      </header>
+
+      <!-- Tab + 数据源 -->
+      <div class="flex flex-col gap-5">
+        <!-- Tab -->
+        <div class="relative flex gap-6 border-b border-neutral-200" id="tab-nav">
+          <button id="tab-manual" class="tab-btn pb-2.5 text-sm font-medium text-brand transition-colors">
+            手动粘贴
+          </button>
+          <button id="tab-api" class="tab-btn pb-2.5 text-sm font-medium text-neutral-400 hover:text-neutral-600 transition-colors">
+            API 自动
+          </button>
+          <div id="tab-indicator" class="absolute bottom-0 h-0.5 bg-brand transition-all duration-200 ease-out"></div>
+        </div>
+
+        <!-- 数据源区 -->
+        <section class="p-6 sm:p-8 rounded-2xl border border-neutral-200 bg-white flex flex-col gap-5">
+        <div class="flex items-center gap-2">
+          <h2 class="section-label !mb-0">数据源</h2>
+          <span class="text-[10px] px-1.5 py-0.5 rounded-md bg-neutral-100 text-neutral-500">小红书</span>
+          <div id="format-hint" class="relative group">
+            <svg class="w-3.5 h-3.5 text-neutral-400 cursor-help" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <div class="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-64 p-3 rounded-xl bg-neutral-900 text-white text-xs leading-relaxed opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10 shadow-lg">
+              粘贴小红书评论，格式：用户名 / 评论 / 点赞数（每 3 行为一组）
+              <div class="absolute bottom-full left-1/2 -translate-x-1/2 -mb-px border-4 border-transparent border-b-neutral-900"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 手动粘贴面板 -->
+        <div id="panel-manual" class="flex flex-col gap-3">
+          <textarea
+            id="comment-input"
+            rows="6"
+            class="w-full resize-none rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3.5 text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:border-brand focus:bg-white transition-colors"
+            placeholder="请粘贴小红书评论内容"
+          ></textarea>
+          <div class="flex items-center justify-between" aria-live="polite" aria-atomic="true">
+            <span id="parse-status" class="text-xs text-neutral-500">已识别到 0 条有效评论</span>
+            <button id="clear-btn" class="text-xs text-neutral-400 hover:text-brand transition-colors">清空</button>
+          </div>
+        </div>
+
+        <!-- API 面板 -->
+        <div id="panel-api" class="hidden flex flex-col gap-4">
+          <div id="api-login-section">
+            <div class="flex flex-col items-center gap-3 py-6">
+              <p class="text-sm text-neutral-500">授权后自动从笔记拉取全部评论数据</p>
+              <button id="api-connect-btn" class="px-5 py-2 text-sm font-medium rounded-full border border-brand text-brand hover:bg-brand hover:text-white transition-colors duration-200">
+                连接小红书
+              </button>
+            </div>
+          </div>
+          <div id="api-content-section" class="hidden flex flex-col gap-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                <span class="text-sm text-neutral-900">已连接小红书</span>
+              </div>
+              <button id="api-logout-btn" class="text-xs text-neutral-400 hover:text-brand transition-colors">退出登录</button>
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs text-neutral-500">选择笔记</label>
+              <div class="relative">
+                <select id="api-note-select" class="w-full appearance-none rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-2.5 text-sm text-neutral-900 focus:outline-none focus:border-brand focus:bg-white transition-colors cursor-pointer">
+                  <option value="">请选择要抽奖的笔记...</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-neutral-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+              </div>
+            </div>
+            <div id="api-note-info" class="hidden text-sm">
+              <div class="text-xs text-neutral-400">选中笔记后显示详情</div>
+            </div>
+            <div class="flex items-center gap-3">
+              <button id="api-fetch-btn" class="flex-1 py-2.5 bg-brand hover:bg-brand-hover text-white text-sm font-medium rounded-xl transition-colors duration-200 flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>拉取全部评论</span>
+              </button>
+              <label class="flex items-center gap-1.5 cursor-pointer select-none">
+                <input id="api-incremental" type="checkbox" class="w-4 h-4 rounded border-neutral-300 text-brand focus:ring-0 focus:ring-offset-0" />
+                <span class="text-xs text-neutral-400">仅增量</span>
+              </label>
+            </div>
+            <div id="api-progress" class="hidden">
+              <div class="flex items-center justify-between text-xs text-neutral-400 mb-1.5">
+                <span id="api-progress-text">正在拉取评论...</span>
+                <span id="api-progress-count">0 / 0</span>
+              </div>
+              <div class="w-full h-1 bg-neutral-100 rounded-full overflow-hidden">
+                <div id="api-progress-bar" class="h-full bg-brand rounded-full transition-all duration-500" style="width: 0%"></div>
+              </div>
+            </div>
+            <div id="api-fetch-result" class="hidden text-center py-1">
+              <span class="text-sm text-brand font-medium"></span>
+            </div>
+          </div>
+        </div>
+      </section>
+      </div>
+
+      <!-- 抽奖配置区 -->
+      <section class="p-6 sm:p-8 rounded-2xl border border-neutral-200 bg-white flex flex-col gap-5">
+        <h2 class="section-label !mb-0">抽奖配置</h2>
+        <div class="flex flex-col">
+          <!-- 中奖人数 -->
+          <div class="flex items-center justify-between gap-4 py-4 border-b border-neutral-100">
+            <div class="flex flex-col gap-0.5">
+              <span class="text-sm text-neutral-900">中奖人数</span>
+              <span class="text-xs text-neutral-400">设置要抽取的获奖人数</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <button id="decrement-btn" class="w-8 h-8 rounded-lg border border-neutral-200 flex items-center justify-center text-neutral-400 hover:text-brand hover:border-brand transition-colors duration-200 text-sm">-</button>
+              <input id="winner-count" type="number" min="1" max="100" value="1" class="w-12 text-center py-1 rounded-lg border border-neutral-200 text-sm font-medium bg-white focus:outline-none focus:border-brand transition-colors" />
+              <button id="increment-btn" class="w-8 h-8 rounded-lg border border-neutral-200 flex items-center justify-center text-neutral-400 hover:text-brand hover:border-brand transition-colors duration-200 text-sm">+</button>
+            </div>
+          </div>
+          <!-- 同一用户去重 -->
+          <div class="flex items-center justify-between gap-4 py-4 border-b border-neutral-100">
+            <div class="flex flex-col gap-0.5">
+              <span class="text-sm text-neutral-900">同一用户去重</span>
+              <span class="text-xs text-neutral-400">重复评论的用户只保留一条</span>
+            </div>
+            <label class="toggle-switch">
+              <input id="dedup-toggle" type="checkbox" checked role="switch">
+              <div class="toggle-track">
+                <div class="toggle-thumb"></div>
+              </div>
+            </label>
+          </div>
+          <!-- 过滤关键词 -->
+          <div class="flex flex-col gap-1.5 pt-4">
+            <div class="flex items-center justify-between">
+              <label for="keyword-filter" class="text-sm text-neutral-900">过滤关键词</label>
+              <span class="text-xs text-neutral-400">可选</span>
+            </div>
+            <input id="keyword-filter" type="text" placeholder="只保留包含此关键词的评论" class="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:border-brand focus:bg-white transition-colors" />
+          </div>
+        </div>
+      </section>
+
+      <!-- 执行区 -->
+      <section>
+        <button id="start-btn" class="w-full h-12 bg-brand text-white font-semibold text-[15px] rounded-xl transition-all duration-200 flex items-center justify-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line><circle cx="7.5" cy="10" r="1.5" fill="currentColor" stroke="none"></circle><circle cx="12" cy="10" r="1.5" fill="currentColor" stroke="none"></circle><circle cx="16.5" cy="10" r="1.5" fill="currentColor" stroke="none"></circle></svg>
+          <span>开始抽奖</span>
+        </button>
+        <div id="lottery-animation" class="hidden text-center mt-4">
+          <div id="rolling-name" class="text-lg font-bold text-brand h-7 flex items-center justify-center">???</div>
+        </div>
+      </section>
+
+      <!-- 抽奖记录区 -->
+      <section class="border-t border-neutral-200 pt-8">
+        <button id="history-toggle" class="w-full flex items-center justify-between py-2 text-left group">
+          <span class="section-label !mb-0">抽奖记录</span>
+          <span id="history-chevron" class="text-neutral-400 transition-transform duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+        </button>
+        <div id="history-content" class="hidden mt-3">
+          <div id="history-list" class="text-sm text-neutral-500">
+            <div class="text-xs text-neutral-400 py-2">暂无抽奖记录</div>
+          </div>
+          <button id="clear-history-btn" class="text-xs text-neutral-400 hover:text-brand transition-colors mt-2">清空记录</button>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- 结果弹窗 -->
+    <div id="result-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-6">
+      <div id="result-backdrop" class="absolute inset-0 bg-slate-900/40 backdrop-blur-md"></div>
+      <div id="result-content" class="relative w-full max-w-sm bg-white rounded-[28px] shadow-[0_45px_80px_-16px_rgba(0,0,0,0.15)] overflow-hidden">
+        <div class="px-6 pt-6 pb-3 flex items-start justify-between gap-4">
+          <div class="flex items-center gap-2.5">
+            <span class="text-xl">🎉</span>
+            <div>
+              <h2 class="text-base font-bold text-neutral-900">恭喜以下用户中奖</h2>
+              <p class="text-xs text-neutral-400 mt-0.5">抽奖结果已生成，公平公开</p>
+            </div>
+          </div>
+          <button id="modal-close-btn" class="w-7 h-7 flex items-center justify-center rounded-full text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors duration-200 flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div id="winner-list" class="px-6 pb-4 space-y-2 max-h-[50vh] overflow-y-auto"></div>
+        <div class="px-6 pb-6 pt-2 flex gap-3 border-t border-neutral-100">
+          <button id="copy-btn" class="flex-1 py-2.5 bg-brand hover:bg-brand-hover text-white font-medium rounded-xl transition-colors duration-200 text-sm flex items-center justify-center gap-2">复制名单</button>
+          <button id="reset-btn" class="flex-1 py-2.5 border border-neutral-200 text-neutral-900 font-medium rounded-xl hover:bg-neutral-50 transition-colors duration-200 text-sm">再抽一次</button>
+        </div>
+      </div>
+    </div>
+
+    <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+    <footer class="w-full max-w-2xl mt-12 pt-8 border-t border-neutral-200 text-center">
+      <p class="text-sm text-neutral-400">© 2026 Lottery-Box. All Rights Reserved.</p>
+    </footer>
+
+  </div>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>

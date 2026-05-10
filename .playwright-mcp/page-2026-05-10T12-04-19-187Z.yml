@@ -1,0 +1,81 @@
+- generic [ref=e2]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - heading "评论抽奖" [level=1] [ref=e5]
+      - paragraph [ref=e6]: 快速、公正地抽取互动粉丝
+    - generic [ref=e7]:
+      - heading "数据源" [level=2] [ref=e8]
+      - generic [ref=e9]:
+        - button "手动粘贴" [ref=e10]
+        - button "API 自动" [ref=e11]
+      - generic [ref=e12]:
+        - textbox "用户昵称1 这条评论内容很不错 12 用户昵称2 我也想要！ 5" [ref=e13]:
+          - /placeholder: "用户昵称1\n这条评论内容很不错\n12\n用户昵称2\n我也想要！\n5"
+        - generic [ref=e14]:
+          - text: 已识别 0 位用户
+          - button "清空" [ref=e15]
+      - generic [ref=e16]:
+        - generic [ref=e18]:
+          - paragraph [ref=e19]: 授权后自动从笔记拉取全部评论数据
+          - button "连接小红书" [ref=e20]
+        - generic [ref=e21]:
+          - generic [ref=e22]:
+            - generic [ref=e23]: 已连接小红书
+            - button "退出登录" [ref=e24]
+          - generic [ref=e25]:
+            - text: 选择笔记
+            - generic [ref=e26]:
+              - combobox [ref=e27]:
+                - option "请选择要抽奖的笔记..." [selected]
+              - img [ref=e29]
+          - generic [ref=e32]: 选中笔记后显示详情
+          - generic [ref=e33]:
+            - button "拉取全部评论" [ref=e34]:
+              - img [ref=e35]
+              - text: 拉取全部评论
+            - generic [ref=e38]:
+              - checkbox "仅增量" [ref=e39]
+              - text: 仅增量
+          - generic [ref=e41]: 正在拉取评论... 0 / 0
+    - generic [ref=e42]:
+      - heading "抽奖配置" [level=2] [ref=e43]
+      - generic [ref=e44]:
+        - generic [ref=e45]:
+          - generic [ref=e46]: 中奖人数 设置要抽取的获奖人数
+          - generic [ref=e47]:
+            - button "-" [ref=e48]
+            - spinbutton [ref=e49]: "1"
+            - button "+" [ref=e50]
+        - generic [ref=e51]:
+          - generic [ref=e52]: 同一用户去重 重复评论的用户只保留一条
+          - switch "开启" [checked] [ref=e53]
+        - generic [ref=e54]:
+          - generic [ref=e55]: 过滤关键词 可选
+          - textbox "过滤关键词" [ref=e56]:
+            - /placeholder: 只保留包含此关键词的评论
+    - generic [ref=e57]:
+      - button "开始抽奖" [ref=e58]:
+        - img [ref=e59]
+        - text: 开始抽奖
+      - generic [ref=e65]: "???"
+    - generic [ref=e66]:
+      - button "抽奖记录" [ref=e67]:
+        - text: 抽奖记录
+        - img [ref=e69]
+      - generic [ref=e71]:
+        - generic [ref=e73]: 暂无抽奖记录
+        - button "清空记录" [ref=e74]
+  - generic [ref=e76]:
+    - generic [ref=e77]:
+      - generic [ref=e78]:
+        - text: 🎉
+        - generic [ref=e79]:
+          - heading "恭喜以下用户中奖" [level=2] [ref=e80]
+          - paragraph [ref=e81]: 抽奖结果已生成，公平公开
+      - button [ref=e82]:
+        - img [ref=e83]
+    - generic [ref=e85]:
+      - button "复制名单" [ref=e86]
+      - button "再抽一次" [ref=e87]
+  - contentinfo [ref=e89]:
+    - paragraph [ref=e90]: Lottery Box · 手动粘贴模式下评论数据不上传服务器

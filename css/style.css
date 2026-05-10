@@ -1,0 +1,254 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #3b82f6;
+  --color-brand-hover: #2563eb;
+
+  --color-neutral-900: #171717;
+  --color-neutral-700: #404040;
+  --color-neutral-500: #737373;
+  --color-neutral-400: #a3a3a3;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-50: #fafafa;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+    color-scheme: light;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+      "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+      "Noto Color Emoji";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: #fafafa;
+    color: #171717;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  ::selection {
+    background: #3b82f6;
+    color: white;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+}
+
+/* 区域小标题 */
+.section-label {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #171717;
+  margin-bottom: 12px;
+}
+
+/* 滚动条 */
+textarea::-webkit-scrollbar {
+  width: 5px;
+}
+textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+textarea::-webkit-scrollbar-thumb {
+  background: #d4d4d4;
+  border-radius: 2.5px;
+}
+textarea {
+  scrollbar-width: thin;
+  scrollbar-color: #d4d4d4 transparent;
+}
+
+/* 焦点环 — 仅对按钮等交互元素保留轻量 outline，输入框靠 border-color 变化 */
+button:focus-visible,
+[role="switch"]:focus-visible {
+  outline: 1.5px solid #3b82f6;
+  outline-offset: 1px;
+}
+
+/* 中奖闪烁 */
+@keyframes winner-flash {
+  0%, 100% {
+    background-color: #fafafa;
+  }
+  50% {
+    background-color: #eff6ff;
+  }
+}
+.winner-highlight {
+  animation: winner-flash 1.5s ease-in-out 3;
+  border-color: #3b82f6;
+}
+
+/* 彩带 canvas */
+#confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+}
+
+/* 弹窗动画 */
+@keyframes modal-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+@keyframes modal-backdrop-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.modal-animate {
+  animation: modal-enter 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.modal-backdrop-animate {
+  animation: modal-backdrop-enter 0.2s ease forwards;
+}
+
+/* Tab 按钮 */
+.tab-btn {
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+/* Tab 面板进入动画 */
+@keyframes tab-panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.tab-panel-animate {
+  animation: tab-panel-enter 0.25s ease-out forwards;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+.toggle-switch input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+.toggle-track {
+  position: relative;
+  width: 40px;
+  height: 24px;
+  background-color: #e5e5e5;
+  border-radius: 9999px;
+  transition: background-color 0.2s ease;
+}
+.toggle-switch input:checked + .toggle-track {
+  background-color: #3b82f6;
+}
+.toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border-radius: 9999px;
+  transition: transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.toggle-switch input:checked + .toggle-track .toggle-thumb {
+  transform: translateX(16px);
+}
+
+/* 按钮按压反馈 */
+#copy-btn:active,
+#reset-btn:active,
+#api-connect-btn:active,
+#api-fetch-btn:active {
+  transform: scale(0.98);
+}
+
+/* 减弱动画偏好 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .winner-highlight {
+    animation: none;
+    background-color: #fafafa;
+    border-color: #3b82f6;
+  }
+}
+
+/* Handle Browser Autofill Styles */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: #171717 !important;
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 隐藏 number input 默认的上下箭头 */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}

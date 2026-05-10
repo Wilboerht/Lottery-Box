@@ -1,0 +1,21 @@
+{
+  "name": "lottery-box-api",
+  "version": "1.0.0",
+  "description": "Lottery-Box 抽奖箱 后端服务",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "axios": "^1.8.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.0",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.5.1",
+    "express-session": "^1.18.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
